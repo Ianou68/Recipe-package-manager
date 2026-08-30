@@ -2,45 +2,41 @@
 #include <stdlib.h>
 #include <string.h>
 
-  void install() {
-    const char *url = "https://github.com/fastfetch-cli/fastfetch/releases/download/2.67.0/fastfetch-linux-amd64.tar.gz";
+void install(const char *paquet) {
+    printf("Récupération de %s...\n", paquet);
 
-    printf("Récupération du tar.gz\n");
-  
-    char commande[512];
+    char command[512];
 
-    snprintf(commande, sizeof(commande), "curl -sL \"%s\" -o /tmp/fastfetch.tar.gz", url);
+    // Téléchargement (-f échoue si 404), exécution puis suppression
+    snprintf(command, sizeof(command), 
+             "curl -fsSL https://raw.githubusercontent.com/Ianou68/Recipe-package-manager/main/recipe/%s.sh -o /tmp/%s.sh && bash /tmp/%s.sh && rm /tmp/%s.sh", 
+             paquet, paquet, paquet, paquet);
 
-    system(commande);
+    int status = system(command);
 
-    printf("install");
-    system("mkdir -p ~/.local/bin");
-    system("tar -xzf /tmp/fastfetch.tar.gz -C ~/.local/bin --strip-components=3 fastfetch-linux-amd64/usr/bin/fastfetch");
+    if (status != 0) {
+        printf("Erreur : l'installation du paquet '%s' a échoué.\n", paquet);
+        snprintf(command, sizeof(command), "rm -f /tmp/%s.sh", paquet);
+        system(command);
+        return;
+    }
 
-    system("rm -rf /tmp/fastfetch.tar.gz");
+    printf("Installation de %s terminée avec succès.\n", paquet);
+}
 
-    printf("C'est terminé");
-  }
-  void supprimer() {
-    printf("suprimation ...");
-    system("rm -rf ~/.local/bin/fastfetch");
-  }
-  int main(int argc, char *argv[]) {
-    // Vérifie si un argument est passé (ex: ./my_pm install)
-    if (argc < 2) {
-        printf("Usage: %s {install|remove}\n", argv[0]);
+int main(int argc, char *argv[]) {
+    if (argc < 3) {
+        printf("Usage: %s install <paquet>\n", argv[0]);
         return 1;
     }
 
     if (strcmp(argv[1], "install") == 0) {
-        install();
-    } else if (strcmp(argv[1], "remove") == 0) {
-        supprimer();
+        install(argv[2]);
     } else {
         printf("Commande inconnue : %s\n", argv[1]);
-        printf("Usage: %s {install|remove}\n", argv[0]);
+        printf("Usage: %s install <paquet>\n", argv[0]);
         return 1;
     }
 
     return 0;
-} 
+}

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "index.h"
 
 void install(const char *paquet) {
     printf("Récupération de %s...\n", paquet);
@@ -40,18 +41,28 @@ void remove_package(const char *paquet) {
 
 
 int main(int argc, char *argv[]) {
-    if (argc < 3) {
-        printf("Usage: %s install <paquet>\n", argv[0]);
+    if (argc < 2) {
+        printf("Usage: %s <install|remove|list> [paquet]\n", argv[0]);
         return 1;
     }
 
     if (strcmp(argv[1], "install") == 0) {
+        if (argc < 3) {
+            printf("Usage: %s install <paquet>\n", argv[0]);
+            return 1;
+        }
         install(argv[2]);
     } else if (strcmp(argv[1], "remove") == 0 || strcmp(argv[1], "uninstall") == 0) {
+        if (argc < 3) {
+            printf("Usage: %s remove <paquet>\n", argv[0]);
+            return 1;
+        }
         remove_package(argv[2]);
+    } else if (strcmp(argv[1], "list") == 0) {
+        index_list(); // Nom de ta fonction qui liste les paquets
     } else {
         printf("Commande inconnue : %s\n", argv[1]);
-        printf("Usage: %s install <paquet>\n", argv[0]);
+        printf("Usage: %s <install|remove|list> [paquet]\n", argv[0]);
         return 1;
     }
 

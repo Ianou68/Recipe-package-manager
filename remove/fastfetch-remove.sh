@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+VERSION="2.67.1"
+INDEX="/var/udf/index.txt"
+
 echo "Désinstallation de fastfetch..."
 
 # Si installé via CMake / make install
@@ -15,3 +18,5 @@ fi
 sudo rm -f /usr/local/bin/flashfetch /usr/bin/flashfetch
 
 echo "fastfetch a été désinstallé avec succès."
+
+sed -i '/^fastfetch |/d' "$INDEX"

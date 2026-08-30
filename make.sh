@@ -1,1 +1,1 @@
-gcc main.c -o udf && mv udf ~/.local/bin/
+sudo gcc main.c -o udf && mv udf /usr/local/bin/
